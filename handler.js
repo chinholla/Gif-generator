@@ -16,15 +16,24 @@ exports.handler = async (event) => {
             params: { api_key: giphyApiKey, s: prompt, weirdness: 4 }
         });
 
-        const gifUrl = giphyResp.data.data.images.original.url;
+        const gifUrl = giphyResp?.data?.data?.images?.original?.url;
         if (!gifUrl) throw new Error('GIF not found');
 
+        const html = `
+        <!DOCTYPE html>
+        <html>
+        <head><title>GIF Result</title></head>
+        <body style="text-align:center; margin-top:50px;">
+            <img src="${gifUrl}" alt="GIF result" />
+        </body>
+        </html>
+        `;
         return {
-            statusCode: 301,
+            statusCode: 200,
             headers: {
-                Location: gifUrl
+                'Content-Type': 'text/html'
             },
-            body: ""
+            body: html
         };
     } catch (err) {
         console.error(err);
